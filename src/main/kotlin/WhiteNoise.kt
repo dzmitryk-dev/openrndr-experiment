@@ -2,7 +2,6 @@ import org.openrndr.application
 import org.openrndr.draw.ColorType
 import org.openrndr.draw.colorBuffer
 import java.nio.ByteBuffer
-import kotlin.random.Random
 
 fun main() = application {
     configure {
@@ -11,8 +10,6 @@ fun main() = application {
     }
 
     program {
-        val rnd = Random(System.currentTimeMillis())
-
         // -- create a color buffer that uses 8 bits per channel (the default)
         val cb = colorBuffer(800, 600, type = ColorType.UINT8)
 
