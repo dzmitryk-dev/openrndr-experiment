@@ -1,5 +1,5 @@
 import org.openrndr.application
-import org.openrndr.color.ColorHSLa
+import org.openrndr.color.ColorRGBa
 import org.openrndr.draw.ColorType
 import org.openrndr.draw.colorBuffer
 import org.openrndr.math.Vector2
@@ -25,7 +25,7 @@ fun main() = application {
 
         val shadow = cb.shadow
 
-        val calculated = DoubleArray((height + 1) * (width + 1))
+        val calculated = IntArray(height * width)
 
         for (x in 0 until width) {
             for (y in 0 until height) {
@@ -49,25 +49,19 @@ fun main() = application {
                     iteration++
                 }
 
-                val hue = map(iteration.toDouble(), 0.0, maxIterations.toDouble(), 0.0, 360.0)
+                val hue = 0xFFFFFFFF.toUInt() - map(0.0, maxIterations.toDouble(), 0.0, 0xFFFFFFFF.toDouble(), iteration.toDouble()).toUInt()
 
-                try {
-                    calculated[x * height + y] = hue
-                } catch (ex: ArrayIndexOutOfBoundsException) {
-                    println("x = $x, y = $y, x * width + y = ${x * width + y}")
-                    throw ex
-                }
+                calculated[x * height + y] = hue.toInt()
             }
         }
 
 
 
         extend {
-            val s = Math.random()
-            val l = Math.random()
+            val diff = (seconds * 100 % 0xFFFFFFFF).toInt()
             for (x in 0 until width) {
                 for (y in 0 until height) {
-                    shadow[x, y] = ColorHSLa(calculated[x * height + y], s, l).toRGBa().toRGBa()
+                    shadow[x, y] = ColorRGBa.fromHex(calculated[x * height + y] + diff)
                 }
             }
 
