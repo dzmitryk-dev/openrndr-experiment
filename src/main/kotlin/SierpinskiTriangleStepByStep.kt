@@ -10,21 +10,32 @@ fun main() = application {
     }
 
     program {
+        val p1 = Vector2(width / 2.0, 50.0)
+        val p2 = Vector2(50.0, height - 50.0)
+        val p3 = Vector2(width - 50.0, height - 50.0)
+
+        var lastChangeTime = 0.0
+        var depth = 1
+
         extend {
             drawer.clear(ColorRGBa.BLACK)
             drawer.stroke = ColorRGBa.WHITE
             drawer.fill = null
 
-            val p1 = Vector2(width / 2.0, 50.0)
-            val p2 = Vector2(50.0, height - 50.0)
-            val p3 = Vector2(width - 50.0, height - 50.0)
-
-            drawSierpinskiTriangle(drawer, p1, p2, p3, 7)
+            // Draw a new level of the Sierpinski triangle every 2 seconds
+            if (seconds - lastChangeTime > 2) {
+                depth++
+                if (depth > 10) {
+                    depth = 1
+                }
+                lastChangeTime = seconds
+            }
+            drawSierpinskiTriangle(drawer, p1, p2, p3, depth)
         }
     }
 }
 
-fun drawSierpinskiTriangle(drawer: Drawer, p1: Vector2, p2: Vector2, p3: Vector2, depth: Int) {
+private fun drawSierpinskiTriangle(drawer: Drawer, p1: Vector2, p2: Vector2, p3: Vector2, depth: Int) {
     if (depth == 0) {
         // Draw a triangle for the base case
         drawer.lineSegment(p1, p2)
